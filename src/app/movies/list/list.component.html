@@ -1,0 +1,53 @@
+
+<form>
+  <div class="form-group form-inline">
+      Search Movies By Title: <input class="form-control ml-2" type="text" name="searchTerm" [(ngModel)]="service.searchTerm"/>
+      <span class="ml-3" *ngIf="service.loading$ | async">Loading...</span>
+      
+  </div>
+
+  <table class="table table-striped">
+    <thead>
+    <tr>
+      <th scope="col">Imdb ID</th>
+      <th scope="col">Poster</th>
+      <th scope="col" sortable="title" (sort)="onSort($event)">Title</th>
+      <th scope="col" sortable="language" (sort)="onSort($event)">Language</th>
+      <th scope="col" sortable="listingType" (sort)="onSort($event)">Listing Type</th>
+      <th scope="col" sortable="imdbID" (sort)="onSort($event)">Imdb Rating</th>
+      <th scope="col" sortable="location" (sort)="onSort($event)">Location</th>
+      <th scope="col"></th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr *ngFor="let movie of movies$ | async">
+      <th scope="row">{{ movie.imdbID }}</th>
+      <td>
+        <img [src]="movie.poster" class="mr-2" style="width: 64px;height: 64px;border-radius: 50%;">
+        
+      </td>
+      <td>
+        <ngb-highlight [result]="movie.title" [term]="service.searchTerm"></ngb-highlight>
+      </td>
+      <td><ngb-highlight [result]="movie.language" [term]="service.searchTerm"></ngb-highlight></td>
+      <td><ngb-highlight [result]="movie.listingType" [term]="service.searchTerm"></ngb-highlight></td>
+      <td><ngb-highlight [result]="movie.imdbRating" [term]="service.searchTerm"></ngb-highlight></td>
+      <td><ngb-highlight [result]="movie.location" [term]="service.searchTerm"></ngb-highlight></td>
+      <td><button class="btn btn-primary" (click)="viewDetails(movie.imdbID);">View Details</button></td>
+    </tr>
+    </tbody>
+  </table>
+
+  <div class="d-flex justify-content-between p-2">
+    <ngb-pagination
+      [collectionSize]="(total$ | async)!" [(page)]="service.page" [pageSize]="service.pageSize">
+    </ngb-pagination>
+
+    <select class="custom-select" style="width: auto" name="pageSize" [(ngModel)]="service.pageSize">
+      <option [ngValue]="5">5 items per page</option>
+      <option [ngValue]="10">10 items per page</option>
+      <option [ngValue]="25">25 items per page</option>
+    </select>
+  </div>
+
+</form>
